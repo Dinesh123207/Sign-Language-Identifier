@@ -9,3 +9,47 @@ Pandas DataFrame: Pandas DataFrame (dataset) is used to store and manipulate the
 Classes and Objects: Several classes and objects are instantiated and utilized, such as the KNeighborsClassifier class (classifier) from scikit-learn, StandardScaler (scaler), and Hands and DrawingUtils from Mediapipe (mp_hands, mp_drawing).
 
 Dictionaries: Although not explicitly seen in this code snippet, dictionaries are commonly used in machine learning pipelines for hyperparameter tuning, model evaluation, and more.
+
+
+
+
+Here's a breakdown of each line of code:
+
+import cv2: Imports the OpenCV library for computer vision tasks.
+import mediapipe as mp: Imports the Mediapipe library for various tasks including hand tracking.
+import pandas as pd: Imports the Pandas library for data manipulation and analysis.
+import numpy as np: Imports the NumPy library for numerical computing.
+dataset = pd.read_csv('https://raw.githubusercontent.com/MinorvaFalk/KNN_Alphabet/main/Dataset/hand_dataset_1000_24.csv'): Reads a CSV file from a URL and stores it in a Pandas DataFrame named dataset.
+dataset.head(): Displays the first five rows of the dataset.
+X = dataset.iloc[:, 1:].values and Y = dataset.iloc[:, 0].values: Extracts feature variables (X) and target variable (Y) from the dataset.
+from sklearn.model_selection import train_test_split: Imports the train_test_split function from scikit-learn to split the dataset into training and testing sets.
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33): Splits the dataset into training and testing sets, with 33% of the data reserved for testing.
+from sklearn.preprocessing import StandardScaler: Imports the StandardScaler class from scikit-learn for standardization of features.
+scaler = StandardScaler().fit(X_train): Fits the scaler to the training data.
+X_train = scaler.transform(X_train) and X_test = scaler.transform(X_test): Standardizes the training and testing data.
+from sklearn.neighbors import KNeighborsClassifier: Imports the KNeighborsClassifier class from scikit-learn for K-Nearest Neighbors classification.
+classifier = KNeighborsClassifier(n_neighbors=3): Creates a K-Nearest Neighbors classifier object with 3 neighbors.
+classifier.fit(X_train, y_train): Fits the classifier to the training data.
+y_pred = classifier.predict(X_test): Predicts the target variable for the testing set.
+from sklearn.metrics import classification_report, accuracy_score: Imports functions for evaluating the classifier's performance.
+print(classification_report(y_test, y_pred)) and print(accuracy_score(y_test, y_pred)*100): Prints the classification report and accuracy score of the classifier.
+error = []: Initializes an empty list to store errors.
+for i in range(1, 40):: Loops through values of k from 1 to 39.
+knn = KNeighborsClassifier(n_neighbors=i): Creates a K-Nearest Neighbors classifier object with varying number of neighbors.
+pred_i = knn.predict(X_test): Predicts the target variable for the testing set using the current value of k.
+error.append(np.mean(pred_i != y_test)): Appends the mean error to the error list.
+The commented-out code from lines 26 to 39 involves plotting the error rate for different values of k using Matplotlib, but it's not executed.
+mp_drawing = mp.solutions.drawing_utils and mp_hands = mp.solutions.hands: Initialize variables for drawing hand landmarks using Mediapipe.
+print("------here-----") and print("------here1-----"): Print statements for debugging purposes.
+cap = cv2.VideoCapture(0): Captures video from the default camera (index 0).
+The following lines set configurations for the Mediapipe hand detection model.
+Inside the while loop, it reads frames from the camera.
+It flips and converts the image format for better processing.
+It processes the hand landmarks using the Mediapipe model.
+It draws hand landmarks on the image.
+It extracts coordinates from the hand landmarks and performs scaling.
+It predicts the class of the hand gesture using the KNN classifier.
+It displays the predicted class on the image.
+if cv2.waitKey(5) & 0xFF == 27:: Checks if the 'esc' key is pressed to exit the loop.
+cap.release(): Releases the video capture object.
+cv2.destroyAllWindows(): Closes all OpenCV windows.
